@@ -1,0 +1,23 @@
+#AI Study Buddy for Computational Complexity
+#Author: LM Travis
+A web-based application built with Streamlit that helps users study and learn about computational complexity. The app features a quiz mode where users can test their knowledge and an AI helper mode where users can ask questions and receive answers.
+
+Features
+Quiz Mode: Test your knowledge of computational complexity with a random question generator.
+AI Helper: Ask the AI any question about computational complexity and receive a response.
+Requirements
+Python 3.7+
+Streamlit 1.10+
+ai_helper module (not included)
+database module (not included)
+Installation
+Clone the repository: git clone https://github.com/your-username/ai-study-buddy.git
+Install the required dependencies: pip install -r requirements.txt
+Run the application: streamlit run app.py
+Usage
+Open the application in your web browser: http://localhost:8501
+Switch between Quiz Mode and AI Helper Mode using the tabs.
+In Quiz Mode, answer the question and submit your response.
+In AI Helper Mode, ask a question and receive a response.
+Contributing
+Contributions are welcome! If you'd like to contribute to the project, please fork the repository and submit a pull request.
