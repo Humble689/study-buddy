@@ -1,7 +1,6 @@
 import openai
 
-#openai.api_key = 
-# Replace with the API key you just copied
+#openai.api_key = "Replace with the API key you"
 
 def get_ai_response(prompt):
     response = openai.ChatCompletion.create(
