@@ -1,5 +1,7 @@
 import openai
 import random
+import json
+import os
 
 #openai.api_key = "Replace with your API key"
 
@@ -25,6 +27,19 @@ STUDY_TIPS = [
     "Don't forget to practice with real examples! 💻"
 ]
 
+# Store conversation history
+CONVERSATION_FILE = "conversation_history.json"
+
+def load_conversation_history():
+    if os.path.exists(CONVERSATION_FILE):
+        with open(CONVERSATION_FILE, 'r') as f:
+            return json.load(f)
+    return []
+
+def save_conversation_history(history):
+    with open(CONVERSATION_FILE, 'w') as f:
+        json.dump(history, f)
+
 def is_greeting(text):
     greetings = ['hi', 'hello', 'hey', 'howdy', 'hola', 'greetings']
     return any(text.lower().startswith(word) for word in greetings)
@@ -33,59 +48,99 @@ def is_how_are_you(text):
     patterns = ['how are you', 'how r u', 'how do you do', 'how are u']
     return any(pattern in text.lower() for pattern in patterns)
 
+def is_thank_you(text):
+    patterns = ['thank', 'thanks', 'appreciate']
+    return any(pattern in text.lower() for pattern in patterns)
+
+def is_confused(text):
+    patterns = ['confused', 'don\'t understand', 'not clear', 'unclear', 'help']
+    return any(pattern in text.lower() for pattern in patterns)
+
 def get_ai_response(prompt):
-    # Handle casual interactions
-    if not prompt.strip():
-        return "Feel free to ask me anything about computer science! I'm here to help! 😊"
+    # Load conversation history
+    conversation_history = load_conversation_history()
     
-    if is_greeting(prompt):
-        return random.choice(GREETINGS)
-    
-    if is_how_are_you(prompt):
-        return "I'm doing great and excited to help you learn! How can I assist you with computer science today? 🌟"
-    
-    # Add a fun study tip randomly (20% chance)
-    should_add_tip = random.random() < 0.2
-    
-    system_prompt = """You are a friendly and enthusiastic computer science tutor with a great sense of humor. 
-    You have deep knowledge across all areas of computer science including:
-    - Data Structures and Algorithms
-    - Computer Architecture
-    - Operating Systems
-    - Computer Networks
-    - Databases
-    - Software Engineering
-    - Programming Languages
-    - Artificial Intelligence
-    - Web Development
-    - And other computer science topics
+    system_prompt = """You are an expert computer science tutor and programming mentor, similar to Cursor AI. 
+    Your goal is to help students learn computer science concepts through interactive, engaging conversations.
 
-    Make learning fun by:
-    1. Using emojis appropriately
-    2. Including interesting real-world examples
-    3. Breaking down complex concepts into simple explanations
-    4. Adding fun facts when relevant
-    5. Being encouraging and supportive
-    6. Using analogies that students can relate to
-    7. Maintaining a conversational tone while being educational
+    Key characteristics:
+    1. Be conversational and friendly, but professional
+    2. Provide detailed, step-by-step explanations
+    3. Include relevant code examples when appropriate
+    4. Use analogies and real-world examples
+    5. Break down complex concepts into digestible parts
+    6. Ask follow-up questions to ensure understanding
+    7. Provide practical applications and use cases
+    8. Share best practices and common pitfalls
+    9. Use emojis sparingly but effectively
+    10. Maintain context throughout the conversation
 
-    If the student seems frustrated or confused, offer extra encouragement and simpler explanations.
-    If they show interest in a topic, suggest related interesting areas they might enjoy exploring.
+    When explaining concepts:
+    - Start with a high-level overview
+    - Break down into smaller components
+    - Provide concrete examples
+    - Show code snippets when relevant
+    - Explain the "why" behind concepts
+    - Connect to real-world applications
+    - Suggest related topics for deeper learning
+
+    When answering questions:
+    - First understand what the student is asking
+    - Provide a clear, structured response
+    - Include relevant code examples
+    - Explain any technical terms
+    - Ask if they need clarification
+    - Suggest related topics to explore
+
+    When showing code:
+    - Use clear, well-commented examples
+    - Explain the code step by step
+    - Highlight important concepts
+    - Show best practices
+    - Include error handling when relevant
+    - Explain the reasoning behind design choices
+
+    If the student seems confused:
+    - Ask clarifying questions
+    - Provide simpler explanations
+    - Use more examples
+    - Break down the concept further
+    - Suggest alternative approaches
+    - Offer to explain in a different way
+
+    If the student shows interest in a topic:
+    - Suggest related concepts
+    - Share interesting applications
+    - Provide additional resources
+    - Ask if they want to explore further
+    - Share practical examples
+    - Discuss real-world implications
+
+    Always maintain a supportive, encouraging tone while being educational and professional.
     """
+    
+    # Prepare messages with conversation history
+    messages = [{"role": "system", "content": system_prompt}]
+    
+    # Include relevant conversation history for context
+    if conversation_history:
+        # Get the last 6 messages (3 exchanges) for context
+        messages.extend(conversation_history[-6:])
+    
+    # Add the current prompt
+    messages.append({"role": "user", "content": prompt})
     
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
-        ],
+        messages=messages,
         temperature=0.7,
     )
     
     ai_response = response.choices[0].message['content'].strip()
     
-    # Add a random study tip if applicable
-    if should_add_tip:
-        ai_response += f"\n\n💡 Quick Tip: {random.choice(STUDY_TIPS)}"
+    # Save conversation history
+    conversation_history.append({"role": "user", "content": prompt})
+    conversation_history.append({"role": "assistant", "content": ai_response})
+    save_conversation_history(conversation_history)
     
     return ai_response

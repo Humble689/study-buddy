@@ -6,13 +6,15 @@ import random
 # Initialize the database
 init_db()
 
-# Initialize session state for streak counting
+# Initialize session state for streak counting and chat history
 if 'correct_streak' not in st.session_state:
     st.session_state.correct_streak = 0
 if 'total_correct' not in st.session_state:
     st.session_state.total_correct = 0
 if 'total_attempted' not in st.session_state:
     st.session_state.total_attempted = 0
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
 
 st.title("🤖 AI Study Buddy for Computer Science")
 st.markdown("Your friendly companion for learning computer science! 🎓")
@@ -59,18 +61,41 @@ if selected_topic:
                     st.write("Don't worry! Keep trying! 💪")
         with col2:
             if st.button("Next Question ➡️"):
-                st.experimental_rerun()
+                st.rerun()
     else:
         st.info("No questions available for this topic yet. Check back later! 📝")
 
 # AI Helper
 st.header("💡 Chat with AI Study Buddy!")
-ai_question = st.text_area("Ask me anything about computer science or just say hi! 😊")
+st.markdown("""
+Ask me anything about computer science! I can:
+- Explain concepts in detail with code examples
+- Help you understand difficult topics
+- Guide you through problems step by step
+- Share best practices and common pitfalls
+- Provide real-world applications and examples
+""")
 
-if st.button("Send Message 💬"):
-    with st.spinner("Thinking... 🤔"):
-        ai_response = get_ai_response(ai_question)
-        st.write(ai_response)
+# Chat interface
+for message in st.session_state.chat_history:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+
+# Chat input
+if prompt := st.chat_input("Type your message here..."):
+    # Add user message to chat history
+    st.session_state.chat_history.append({"role": "user", "content": prompt})
+    
+    # Display user message
+    with st.chat_message("user"):
+        st.write(prompt)
+    
+    # Get AI response
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking... 🤔"):
+            response = get_ai_response(prompt)
+            st.write(response)
+            st.session_state.chat_history.append({"role": "assistant", "content": response})
 
 # Topic Information
 st.sidebar.header("ℹ️ About Topics")

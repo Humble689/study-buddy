@@ -51,7 +51,6 @@ def init_db():
     ]
     
     c.executemany('INSERT OR IGNORE INTO topics (id, name, description) VALUES (?, ?, ?)', default_topics)
-    
     conn.commit()
     conn.close()
 
