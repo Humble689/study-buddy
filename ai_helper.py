@@ -1,31 +1,6 @@
-import openai
 import random
 import json
 import os
-
-#openai.api_key = "Replace with your API key"
-
-# Fun responses for different situations
-GREETINGS = [
-    "Hello! Ready to learn something cool? 😊",
-    "Hi there! What shall we explore today? 🚀",
-    "Hey! I'm excited to help you study! 📚",
-    "Greetings, fellow knowledge seeker! 🎓"
-]
-
-ENCOURAGEMENTS = [
-    "That's a great question! Let's dive in! 💡",
-    "Awesome topic! You're going to love learning about this! ⭐",
-    "Get ready for some fascinating computer science! 🌟",
-    "Love your curiosity! Let's explore this together! 🔍"
-]
-
-STUDY_TIPS = [
-    "Remember to take short breaks every 25 minutes! 🕒",
-    "Try explaining this concept to someone else - it's a great way to learn! 🗣️",
-    "Drawing diagrams can help visualize complex concepts! ✏️",
-    "Don't forget to practice with real examples! 💻"
-]
 
 # Store conversation history
 CONVERSATION_FILE = "conversation_history.json"
@@ -39,6 +14,77 @@ def load_conversation_history():
 def save_conversation_history(history):
     with open(CONVERSATION_FILE, 'w') as f:
         json.dump(history, f)
+
+# Predefined responses for common topics
+TOPIC_RESPONSES = {
+    "data structures": [
+        "Data structures are ways of organizing and storing data for efficient access and modification. Common examples include arrays, linked lists, stacks, queues, trees, and graphs.",
+        "Arrays provide O(1) access time but fixed size, while linked lists offer dynamic size but O(n) access time.",
+        "Hash tables provide O(1) average case lookup time by using a hash function to map keys to values."
+    ],
+    "algorithms": [
+        "Algorithms are step-by-step procedures for solving problems. Common examples include sorting algorithms (quicksort, mergesort) and search algorithms (binary search).",
+        "Time complexity measures how the runtime of an algorithm grows with input size. Common notations are O(1), O(log n), O(n), O(n log n), and O(n²).",
+        "Space complexity measures how much memory an algorithm uses relative to input size."
+    ],
+    "computer architecture": [
+        "Computer architecture refers to the design of computer systems, including CPU, memory, and I/O devices.",
+        "The CPU consists of the control unit, ALU, and registers. It executes instructions fetched from memory.",
+        "Pipelining is a technique where multiple instructions are overlapped in execution to improve performance."
+    ],
+    "operating systems": [
+        "Operating systems manage hardware resources and provide services for computer programs.",
+        "Process management involves creating, scheduling, and terminating processes.",
+        "Memory management handles allocation and deallocation of memory for processes."
+    ],
+    "networks": [
+        "Computer networks connect devices to share resources and information.",
+        "The OSI model has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, and Application.",
+        "TCP provides reliable, ordered communication, while UDP offers faster but unreliable communication."
+    ],
+    "databases": [
+        "Databases store and manage structured data. Common types include relational (SQL) and non-relational (NoSQL).",
+        "SQL databases use tables with rows and columns, while NoSQL databases use various data models like documents, key-value pairs, or graphs.",
+        "Normalization is the process of organizing data to minimize redundancy and dependency."
+    ],
+    "software engineering": [
+        "Software engineering is the application of engineering principles to software development.",
+        "Common methodologies include waterfall, agile, and DevOps.",
+        "Version control systems like Git help track changes to code over time."
+    ],
+    "programming languages": [
+        "Programming languages are used to create computer programs. They can be compiled or interpreted.",
+        "High-level languages like Python and Java are easier to read and write than low-level languages like assembly.",
+        "Object-oriented programming uses objects to design applications and computer programs."
+    ],
+    "artificial intelligence": [
+        "Artificial intelligence is the simulation of human intelligence by machines.",
+        "Machine learning is a subset of AI that enables systems to learn from data.",
+        "Deep learning uses neural networks with many layers to analyze various factors of data."
+    ],
+    "web development": [
+        "Web development involves creating websites and web applications.",
+        "Frontend development focuses on user interface and experience, while backend development handles server-side logic.",
+        "Common technologies include HTML, CSS, JavaScript, and various frameworks like React, Angular, and Vue."
+    ]
+}
+
+# Greeting responses
+GREETINGS = [
+    "Hello! Ready to learn something cool? 😊",
+    "Hi there! What shall we explore today? 🚀",
+    "Hey! I'm excited to help you study! 📚",
+    "Greetings, fellow knowledge seeker! 🎓"
+]
+
+# Follow-up questions
+FOLLOW_UP_QUESTIONS = [
+    "Would you like me to explain this concept in more detail?",
+    "Is there a specific aspect of this topic you'd like to explore further?",
+    "Would you like to see some code examples related to this concept?",
+    "Do you have any questions about what I just explained?",
+    "Would you like to learn about related topics?"
+]
 
 def is_greeting(text):
     greetings = ['hi', 'hello', 'hey', 'howdy', 'hola', 'greetings']
@@ -56,91 +102,59 @@ def is_confused(text):
     patterns = ['confused', 'don\'t understand', 'not clear', 'unclear', 'help']
     return any(pattern in text.lower() for pattern in patterns)
 
+def get_topic_from_text(text):
+    text = text.lower()
+    for topic in TOPIC_RESPONSES:
+        if topic in text:
+            return topic
+    return None
+
 def get_ai_response(prompt):
     # Load conversation history
     conversation_history = load_conversation_history()
     
-    system_prompt = """You are an expert computer science tutor and programming mentor, similar to Cursor AI. 
-    Your goal is to help students learn computer science concepts through interactive, engaging conversations.
-
-    Key characteristics:
-    1. Be conversational and friendly, but professional
-    2. Provide detailed, step-by-step explanations
-    3. Include relevant code examples when appropriate
-    4. Use analogies and real-world examples
-    5. Break down complex concepts into digestible parts
-    6. Ask follow-up questions to ensure understanding
-    7. Provide practical applications and use cases
-    8. Share best practices and common pitfalls
-    9. Use emojis sparingly but effectively
-    10. Maintain context throughout the conversation
-
-    When explaining concepts:
-    - Start with a high-level overview
-    - Break down into smaller components
-    - Provide concrete examples
-    - Show code snippets when relevant
-    - Explain the "why" behind concepts
-    - Connect to real-world applications
-    - Suggest related topics for deeper learning
-
-    When answering questions:
-    - First understand what the student is asking
-    - Provide a clear, structured response
-    - Include relevant code examples
-    - Explain any technical terms
-    - Ask if they need clarification
-    - Suggest related topics to explore
-
-    When showing code:
-    - Use clear, well-commented examples
-    - Explain the code step by step
-    - Highlight important concepts
-    - Show best practices
-    - Include error handling when relevant
-    - Explain the reasoning behind design choices
-
-    If the student seems confused:
-    - Ask clarifying questions
-    - Provide simpler explanations
-    - Use more examples
-    - Break down the concept further
-    - Suggest alternative approaches
-    - Offer to explain in a different way
-
-    If the student shows interest in a topic:
-    - Suggest related concepts
-    - Share interesting applications
-    - Provide additional resources
-    - Ask if they want to explore further
-    - Share practical examples
-    - Discuss real-world implications
-
-    Always maintain a supportive, encouraging tone while being educational and professional.
-    """
+    # Handle casual interactions
+    if not prompt.strip():
+        response = "Feel free to ask me anything about computer science! I'm here to help! 😊"
+        conversation_history.append({"role": "user", "content": prompt})
+        conversation_history.append({"role": "assistant", "content": response})
+        save_conversation_history(conversation_history)
+        return response
     
-    # Prepare messages with conversation history
-    messages = [{"role": "system", "content": system_prompt}]
+    if is_greeting(prompt):
+        response = random.choice(GREETINGS)
+        conversation_history.append({"role": "user", "content": prompt})
+        conversation_history.append({"role": "assistant", "content": response})
+        save_conversation_history(conversation_history)
+        return response
     
-    # Include relevant conversation history for context
-    if conversation_history:
-        # Get the last 6 messages (3 exchanges) for context
-        messages.extend(conversation_history[-6:])
+    if is_how_are_you(prompt):
+        response = "I'm doing great and excited to help you learn! How can I assist you with computer science today? 🌟"
+        conversation_history.append({"role": "user", "content": prompt})
+        conversation_history.append({"role": "assistant", "content": response})
+        save_conversation_history(conversation_history)
+        return response
     
-    # Add the current prompt
-    messages.append({"role": "user", "content": prompt})
+    if is_thank_you(prompt):
+        response = "You're welcome! Feel free to ask more questions - I'm here to help you learn! 🌟"
+        conversation_history.append({"role": "user", "content": prompt})
+        conversation_history.append({"role": "assistant", "content": response})
+        save_conversation_history(conversation_history)
+        return response
     
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0.7,
-    )
-    
-    ai_response = response.choices[0].message['content'].strip()
+    # Check if the prompt is about a specific topic
+    topic = get_topic_from_text(prompt)
+    if topic:
+        response = random.choice(TOPIC_RESPONSES[topic])
+        # Add a follow-up question
+        response += f"\n\n{random.choice(FOLLOW_UP_QUESTIONS)}"
+    else:
+        # Generic response for other questions
+        response = "I'd be happy to help you with that! Could you please provide more details about what you'd like to learn? For example, you could ask about data structures, algorithms, computer architecture, operating systems, networks, databases, software engineering, programming languages, artificial intelligence, or web development."
     
     # Save conversation history
     conversation_history.append({"role": "user", "content": prompt})
-    conversation_history.append({"role": "assistant", "content": ai_response})
+    conversation_history.append({"role": "assistant", "content": response})
     save_conversation_history(conversation_history)
     
-    return ai_response
+    return response
