@@ -69,17 +69,17 @@ def get_random_question(topic_id=None):
     
     if topic_id:
         c.execute('''
-            SELECT q.id, q.question, q.answer, t.name as topic_name 
-            FROM questions q
-            JOIN topics t ON q.topic_id = t.id
-            WHERE q.topic_id = ?
+            SELECT questions.id, questions.question, questions.answer, topics.name 
+            FROM questions 
+            JOIN topics ON questions.topic_id = topics.id
+            WHERE questions.topic_id = ?
             ORDER BY RANDOM() LIMIT 1
         ''', (topic_id,))
     else:
         c.execute('''
-            SELECT q.id, q.question, q.answer, t.name as topic_name 
-            FROM questions q
-            JOIN topics t ON q.topic_id = t.id
+            SELECT questions.id, questions.question, questions.answer, topics.name 
+            FROM questions 
+            JOIN topics ON questions.topic_id = topics.id
             ORDER BY RANDOM() LIMIT 1
         ''')
     
