@@ -50,6 +50,7 @@ def init_db():
         (10, "Web Development", "Frontend and backend web technologies")
     ]
     
+    
     c.executemany('INSERT OR IGNORE INTO topics (id, name, description) VALUES (?, ?, ?)', default_topics)
     conn.commit()
     conn.close()
