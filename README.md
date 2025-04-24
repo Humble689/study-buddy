@@ -3,25 +3,7 @@
 
 ## 🏆 Featured Projects
 
-### 1. Task Management Web App
-A full-stack application built with React and Node.js for efficient task management.
-- React, Node.js, MongoDB
-- Real-time updates
-- User authentication
-- Responsive design
-- [View Project](https://github.com/Humble689/task-manager)
 
-### 2. Stock Price Predictor
-Machine learning model for stock price prediction with high accuracy.
-- Python, TensorFlow
-- Real-time data processing
-- Interactive visualizations
-- RESTful API
-- [View Project](https://github.com/Humble689/stock-predictor)
-
-### 3. Open Source Contributions
-Active contributor to various open-source projects, enhancing functionality and user experience.
-- Bug fixes and feature implementations
 - Documentation improvements
 - Code optimization
 - [View Contributions](https://github.com/Humble689?tab=repositories)
