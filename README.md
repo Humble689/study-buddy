@@ -4,22 +4,6 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=2196F3&center=true&vCenter=true&width=435&lines=Software+Developer;Open+Source+Enthusiast;Anime+%26+Soccer+Fan" alt="Typing SVG" />
 </div>
 
-<div align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=Humble689&theme=radical&no-frame=true&no-bg=true&margin-w=4&row=1&column=7" alt="GitHub Trophies" />
-</div>
-
-## 🚀 About Me
-
-I'm a passionate software developer who loves creating innovative solutions and diving deep into code. When I'm not coding, you'll find me watching anime or cheering for Messi! 
-
-- 🔭 Currently working on exciting web development projects
-- 🌱 Always learning new technologies and frameworks
-- ⚡ Fun fact: I can binge-watch anime for hours! 
-- 🎯 Goal: Contributing to impactful open-source projects
-
-## 🛠️ Tech Stack
-
-<div align="center">
   
   ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
   ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
