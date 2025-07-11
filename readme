@@ -51,6 +51,13 @@ A web-based application built with Streamlit that helps users study and learn ab
 - database module (included in the repository)
 
 
+### Requirements
+- Python 3.7+
+- Streamlit 1.10+
+- ai_helper module (included in the repository)
+- database module (included in the repository)
+
+
 
 ### Usage
 - Open the application in your web browser: [http://localhost:8501](http://localhost:8501)
