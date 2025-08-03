@@ -6,9 +6,7 @@ import StudyBuddy from './StudyBuddy'
 const theme = createTheme({
 
   const theme = createTheme({
-    const theme = createTheme({
-      const theme = createTheme({
-
+    const theme = createTheme(
   
 
 
