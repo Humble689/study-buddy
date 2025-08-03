@@ -3,9 +3,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material'
 import StudyBuddy from './StudyBuddy'
 
 
-const theme = createTheme({
 
-  
   
 
 
