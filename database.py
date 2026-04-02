@@ -7,7 +7,7 @@ def init_db():
     # Create topics table
     c.execute('''
         CREATE TABLE IF NOT EXISTS topics (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY, 
             name TEXT,
             description TEXT
         )
