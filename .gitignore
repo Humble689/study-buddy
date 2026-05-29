@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+*.pyc
+*.pyo
+*.pyd
+.python-version
+venv/
+.venv/
+.env
+.env.local
+.env.*.local
+.pytest_cache/
+coverage/
+htmlcov/
+coverage.xml
+nosetests.xml
+
+# Ignore model files and app model directories
+models.py
+*/models.py
+models/
+
+# Node / Vite
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+dist/
+build/
+.vite/
+.cache/
+*.log
+
+# Editor directories
+.vscode/
+*.code-workspace
+.idea/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Databases
+*.sqlite3
+*.db
+*.sqlite
+
+# Misc
+coverage/
+coverage.*
+pip-wheel-metadata/
+__pypackages__/
