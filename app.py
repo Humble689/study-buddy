@@ -1,7 +1,6 @@
 import streamlit as st
 from ai_helper import get_ai_response
 from database import init_db, get_random_question, get_all_topics
-import random
 
 # ----------------------------------------------------------------------------
 # Setup
@@ -40,7 +39,10 @@ BG = "#F8FAFC"
 # ----------------------------------------------------------------------------
 st.markdown(
     '<link rel="stylesheet" '
-    'href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">',
+    'href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">'
+    '<link rel="preconnect" href="https://fonts.googleapis.com">'
+    '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&'
+    'family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">',
     unsafe_allow_html=True,
 )
 
@@ -60,7 +62,10 @@ st.markdown(
             vertical-align: -0.125em;
         }}
         html, body, [class*="css"] {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+            font-family: "IBM Plex Sans", -apple-system, sans-serif;
+        }}
+        h1, h2, h3, .section-title, .navbar .brand {{
+            font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
         }}
 
         .main {{
@@ -92,40 +97,45 @@ st.markdown(
             color: #E2E8F0;
         }}
 
-        /* Header band */
-        .app-header {{
-            background: linear-gradient(135deg, {NAVY} 0%, {NAVY_SOFT} 100%);
-            padding: 2rem 2.25rem;
-            border-radius: 14px;
-            margin-bottom: 1.75rem;
+        /* Navbar */
+        .navbar {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: {NAVY};
+            padding: 0.9rem 1.75rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
         }}
-        .app-header h1 {{
+        .navbar .brand {{
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
             color: #FFFFFF;
-            font-size: 1.9rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: -0.01em;
+            font-size: 1.1rem;
+            font-weight: 600;
         }}
-        .app-header p {{
+        .navbar .brand i {{
+            color: {TEAL};
+            font-size: 1.15rem;
+        }}
+        .navbar .navbar-tag {{
             color: #94A3B8;
-            margin: 0.35rem 0 0 0;
-            font-size: 0.98rem;
+            font-size: 0.85rem;
         }}
 
-        /* Section headers */
-        .section-label {{
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: {TEAL_DARK};
-            margin-bottom: 0.25rem;
-        }}
         .section-title {{
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 600;
             color: {NAVY};
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }}
+        .section-title i {{
+            color: {TEAL_DARK};
+            font-size: 1.05rem;
         }}
 
         /* Card */
@@ -205,13 +215,13 @@ st.markdown(
 )
 
 # ----------------------------------------------------------------------------
-# Header
+# Navbar
 # ----------------------------------------------------------------------------
 st.markdown(
     f"""
-    <div class="app-header">
-        <h1>{icon('bi-mortarboard')} Study Buddy</h1>
-        <p>A focused practice space for computer science fundamentals.</p>
+    <div class="navbar">
+        <div class="brand">{icon('bi-mortarboard-fill')} Study Buddy</div>
+        <div class="navbar-tag">Computer science practice</div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -246,23 +256,13 @@ for topic in topics:
     with st.sidebar.expander(topic[1]):
         st.write(topic[2])
 
-st.sidebar.markdown("---")
-quotes = [
-    "The only way to learn a new programming language is by writing programs in it. — Dennis Ritchie",
-    "Code is like humor. When you have to explain it, it's bad. — Cory House",
-    "First, solve the problem. Then, write the code. — John Johnson",
-    "Experience is the name everyone gives to their mistakes. — Oscar Wilde",
-]
-st.sidebar.caption(random.choice(quotes))
-
 # ----------------------------------------------------------------------------
 # Quiz section
 # ----------------------------------------------------------------------------
 left, right = st.columns([1, 1], gap="large")
 
 with left:
-    st.markdown(f'<div class="section-label">{icon("bi-pencil-square")} Practice</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">Quiz yourself</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">{icon("bi-pencil-square")} Quiz yourself</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="sb-card">', unsafe_allow_html=True)
 
@@ -315,8 +315,7 @@ with left:
 # AI helper section
 # ----------------------------------------------------------------------------
 with right:
-    st.markdown(f'<div class="section-label">{icon("bi-chat-dots")} Ask</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">AI study assistant</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">{icon("bi-chat-dots")} AI study assistant</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="sb-card">', unsafe_allow_html=True)
     st.caption(
@@ -344,4 +343,4 @@ with right:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown('<div class="footer-note">Study Buddy · built for focused CS practice</div>', unsafe_allow_html=True)
+st.markdown('<div class="footer-note">Study Buddy — local practice tool</div>', unsafe_allow_html=True)
