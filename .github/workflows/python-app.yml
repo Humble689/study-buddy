@@ -1,4 +1,5 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# CI for the Study Buddy Streamlit app.
+# Lints app.py / ai_helper.py / database.py and runs the test suite in tests/.
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: Python application
@@ -14,26 +15,35 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        pytest
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint with flake8
+        run: |
+          # node_modules/src are the leftover Vite/React scaffold and __pycache__/study_buddy.db
+          # are generated at runtime — none of them are code this workflow needs to lint.
+          EXCLUDE="node_modules,__pycache__,.git,src,build,dist"
+
+          # Stop the build on real problems: syntax errors and undefined names.
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=$EXCLUDE
+
+          # Everything else (style, complexity, line length) is reported but won't fail the build.
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=$EXCLUDE
+
+      - name: Test with pytest
+        run: |
+          pytest -v
