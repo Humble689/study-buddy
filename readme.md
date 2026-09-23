@@ -1,4 +1,4 @@
-# Study Buddy
+# Study Buddy 
 
 A Streamlit app for practicing computer science fundamentals — pick a topic, quiz
 yourself with random questions, and ask a built-in AI assistant when you get stuck.
